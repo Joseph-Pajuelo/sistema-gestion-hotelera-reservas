@@ -1,4 +1,6 @@
-# 🏨 Grand Andino — Sistema de Gestión Hotelera, Reservas e Inteligencia Comercial (BI)
+# 🏨 Sistema de Gestión Hotelera, Reservas e Inteligencia Comercial (BI)
+
+🌐 **Demo en Vivo (Vercel):** **[https://sistema-gestion-hotelera-reservas.vercel.app](https://sistema-gestion-hotelera-reservas.vercel.app)**
 
 Sistema Full-Stack para la administración de inventario hotelero, reservas transaccionales con prevención de **Overbooking** y extracción de indicadores clave de negocio (**KPIs: Tasa de Ocupación, ADR, RevPAR y Flujo de Caja**).
 
