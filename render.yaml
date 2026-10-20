@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: hotel-management-backend
+    runtime: docker
+    rootDir: backend
+    plan: free
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: local
+      - key: PORT
+        value: 8080
