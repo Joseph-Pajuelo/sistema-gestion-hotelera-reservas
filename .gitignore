@@ -1,0 +1,19 @@
+# Java / Maven
+backend/target/
+*.log
+*.class
+*.jar
+!backend/.mvn/wrapper/maven-wrapper.jar
+
+# Node / React / Vite
+frontend/node_modules/
+frontend/dist/
+.npm/
+
+# IDEs & OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+.env

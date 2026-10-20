@@ -1,0 +1,71 @@
+services:
+  # ===========================================================================
+  # 1. CAPA DE PERSISTENCIA Y ANALÍTICA: PostgreSQL 16
+  # ===========================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: hotel-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hotel_db
+      POSTGRES_USER: hotel_admin
+      POSTGRES_PASSWORD: hotel_secret_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./database/02_seed_data.sql:/docker-entrypoint-initdb.d/02_seed_data.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hotel_admin -d hotel_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - hotel-network
+
+  # ===========================================================================
+  # 2. CAPA DE NEGOCIO Y CONCURRENCIA: Java 17 + Spring Boot 3
+  # ===========================================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hotel-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hotel_db
+      SPRING_DATASOURCE_USERNAME: hotel_admin
+      SPRING_DATASOURCE_PASSWORD: hotel_secret_2026
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      PORT: 8080
+    ports:
+      - "8080:8080"
+    networks:
+      - hotel-network
+
+  # ===========================================================================
+  # 3. CAPA DE PRESENTACIÓN Y PROXY INVERSO: React + TypeScript + Nginx
+  # ===========================================================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hotel-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+    networks:
+      - hotel-network
+
+volumes:
+  postgres_data:
+
+networks:
+  hotel-network:
+    driver: bridge
